@@ -37,7 +37,7 @@ module Circuitry
       end
       canvas << divider
 
-      canvas.inject('') { |string, line| string << line << "\n" }
+      canvas.join("\n")
     end
   end
 end
