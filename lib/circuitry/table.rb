@@ -11,7 +11,7 @@ module Circuitry
 
       # Header
       divider = '+' + '-'*(cols.last - 1) + '+'
-      canvas[0] = divider
+      canvas[0] = divider.dup
       divider[cols[inputs.count]] = '+'
       canvas[1] = '|' + title.center(cols.last - 1) + '|'
       canvas[2] = divider
