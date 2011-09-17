@@ -10,7 +10,7 @@ FullAdder = {
   'OR#1.Q'  => 'Cout'
 }
 
-# 2-bit Adder circuit incorporating two Full Adder circuits
+# 2-Bit Adder circuit incorporating two Full Adder circuits
 TwoBitAdder = {
   'Cin'              => 'FullAdder#1.Cin',
   'A1'               => 'FullAdder#1.A',

@@ -1,39 +1,52 @@
-# Digital Logic Simulator
+# Circuitry
 
-In this solution I enable the user to define modular circuits in an
-external file (circuits.data). See the notes below for a description
-of the circuit definition format. A user can build-up complex circuits
-from basic logic gates and from previous user-defined circuits.
+Circuitry is a digital logic simulator I developed as part of [Ruby Mendicant University's](http://university.rubymendicant.com/) September 2011 session. It's a command line application written in Ruby.
 
-Rather than rendering the layout of the circuit, I opted to provide
-another useful way to explore and debug a circuit: a truth table.
-Given any circuit, this program outputs an ASCII table of all possible
-inputs to the circuit and their corresponding outputs. Since the
-program automatically simulates the circuits with all possible inputs,
-there's no need for the user to specify inputs.
+Circuitry enables you to define digital circuits with AND, OR, XOR and NOT gates as well as other circuits you've previously defined. You can build up complex circuits in a modular way. You define your circuits in one or more text files using a Ruby-compatible DSL.
 
-Searching the web, I didn't have much success finding truth tables
-except for simple circuits. Hopefully this program fills a need for
-simulating more complex circuits and building their complete truth tables.
+Once you've defined your circuits, you run the Circuitry application to simulate their operation. The application automatically performs multiple simulations, one for every unique combination of input values. It captures the set of output values produced by the circuit(s) for each simulation run. Finally, the applicaiton prints a truth table of the results to the console.
 
-## Running the Program
+## Running the Application
 
-    ruby circuits.rb <circuitname>
-example:
-<pre>ruby circuits.rb FullAdder</pre>
-    
-note: the circuits.data file must be in the same directory as the circuits.rb file
+Circuitry requires Ruby 1.9. You run the application from the command line as follows:
 
-## Notes
+    bin/circuitry <CircuitName>
+  
+where CircuitName is the name of the main circuit whose inputs and outputs will be simulated. This circuit can include other circuits in it's definition.
 
-The user defines all circuit data in the circuits.data file, except for
-the built-in logic gates AND, OR, XOR, and NOT. The program is invoked
-with the name of one of these circuits. Circuits can include other
-circuits, so modular circuits of increasing complexity can be built-up.
-The circuit.data file includes a 2-bit Adder built from two Full Adders,
-but circuits of three or more levels are possible as well.
+Some sample circuits are defined in the file circuits/samples.rb. To try out Circuitry with the sample FullAdder circuit, run the following command:
 
-Below is an example of a circuit definition (included in circuits.data):
+    bin/circuitry FullAdder
+
+## Circuit Definition Format
+
+Circuit definitions are stored in one or more text files in the circuits/ folder. The application automatically loads all files in this folder that have a .rb extension.
+
+Each circuit must have a unique name, with no spaces or special characters. The format of a circuit definition must follow this structure:
+
+    CircuitName = {
+      'input1' => 'output1',
+      .
+      .
+      .
+      'inputn' => 'outputn'
+    }
+
+Each line in the definition must be separated by a comma. A line represents a connection or wire between one named component and another. A connection can have only one input, but can have more than one outputs. Multiple outputs must be separated by commas and enclosed in braces as follows:
+
+    'inputx' => ['outputx1', 'outputx2'],
+
+Each input and output must have a unique name within that circuit definition, and the names must be enclosed in quotation marks. Most input and output names have multiple parts as follows:
+
+    GateOrCircuitName#Id.Lead
+
+- The GateOrCircuitName is one of the predefined logic gates AND, OR, XOR or NOT or the name of another user-defined circuit.
+- The Id is a unique identifier (usually a number) to distinguish one circuit from another of the same name. Id's only need to be unique within a single circuit definition. The Id must be preceded by a pound sign.
+- The Lead is the name of the input or output for the named circuit or gate. The Lead must be preceded by a period.
+
+A circuit's external inputs and outputs (to the simulator or another circuit) do not include an Id or a Lead.
+
+Below is the sample FullAdder circuit from the file circuits/samples.rb, which is an example of a complete circuit definition:
 
     FullAdder = {
       'A'       => ['XOR#1.A', 'AND#2.A'],
@@ -46,22 +59,16 @@ Below is an example of a circuit definition (included in circuits.data):
       'OR#1.Q'  => 'Cout'
     }
 
-The circuit has a name (FullAdder in this example) with no spaces or
-special characters, followed by an equal signs and an opening curly
-brace. The circuit definition next includes several lines, separated
-by commas, that represent the wiring of the circuit. Each line has
-a wire input on the left, then an equals sign and greater than sign,
-and then one or more wire outputs on the right (if there's more than
-one output, they must be separated by commas and enclosed in brackets).
-All wire inputs and outputs must be enclosed in quotes. The format of
-most inputs and outputs is:
-<pre>&lt;circuitname&gt;#&lt;id&gt;.&lt;lead&gt;</pre>
-The circuitname is another user-defined circuit or one of the gates
-AND, OR, XOR, NOT. The id is a unique identifier to distinguish one
-circuit from another of the same name. Id's only need to be unique
-within a single circuit definition. The lead is the name of the input
-or output for the named circuit. Inputs and outputs that don't have
-pound signs and periods are the external interface for this circuit
-(in this example the inputs A, B, Cin and the outputs S, Cout). Each
-must be uniquely named within a circuit definition. A closing curly
-brace ends the circuit definition.
+A 2-Bit Adder circuit is composed of two FullAdder circuits. Below is the sample TwoBitAdder circuit from the file circuits/samples.rb, which is an example of one circuit including another:
+
+    TwoBitAdder = {
+      'Cin'              => 'FullAdder#1.Cin',
+      'A1'               => 'FullAdder#1.A',
+      'B1'               => 'FullAdder#1.B',
+      'A2'               => 'FullAdder#2.A',
+      'B2'               => 'FullAdder#2.B',
+      'FullAdder#1.S'    => 'S1',
+      'FullAdder#1.Cout' => 'FullAdder#2.Cin',
+      'FullAdder#2.S'    => 'S2',
+      'FullAdder#2.Cout' => 'Cout'
+    }
