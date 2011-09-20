@@ -7,6 +7,7 @@ module Circuitry
   @circuits = {}
 
   def [](circuit)
+    return nil unless const_defined?(circuit)
     @circuits[circuit] ||= const_get(circuit)
   end
 
