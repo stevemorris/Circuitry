@@ -3,41 +3,69 @@ module Circuitry
     extend self
 
     def print(circuit, inputs, outputs, runs)
-      title  = circuit + ' Truth Table'
-      canvas = Array.new(7)
-      cols   = [0]
-      inputs.each  { |input|  cols << cols.last + input.length + 3 }
-      outputs.each { |output| cols << cols.last + output.length + 3 }
+      title   = circuit + ' Truth Table'
+      canvas  = []
+      columns = get_columns(inputs, outputs)
 
-      # Header
-      divider = '+' + '-'*(cols.last - 1) + '+'
-      canvas[0] = divider.dup
-      divider[cols[inputs.count]] = '+'
-      canvas[1] = '|' + title.center(cols.last - 1) + '|'
-      canvas[2] = divider
-      canvas[3] = '|' + 'Inputs'.center(cols[inputs.count] - 1) + '|' +
-        'Outputs'.center(cols.last - cols[inputs.count] - 1) + '|'
-      canvas[4] = divider
-      canvas[5] = '|'
-      inputs.each { |input| canvas[5] << ' ' << input << ' ' << '|' }
-      outputs.each { |output| canvas[5] << ' ' << output << ' ' << '|' }
-      canvas[6] = divider
+      canvas << header_section(title, inputs, outputs, columns)
+      canvas << rows_section(runs, inputs, columns)
+      canvas.join("\n")
+    end
 
-      # Main table
+    private
+
+    def header_section(title, inputs, outputs, columns)
+      lines  = []
+      width  = columns.last + 1
+      lwidth = columns[inputs.count]
+
+      lines << divider(width, width - 1)
+      lines << '|' + title.center(width - 2) + '|'
+      lines << divider(width, lwidth)
+      lines << '|' + 'Inputs'.center(lwidth - 1) +
+               '|' + 'Outputs'.center(width - lwidth - 2) + '|'
+      lines << divider(width, lwidth)
+      lines << headers(inputs, outputs)
+      lines << divider(width, lwidth)
+    end
+
+    def rows_section(runs, inputs, columns)
+      lines  = []
+      width  = columns.last + 1
+      lwidth = columns[inputs.count]
+
       runs.each do |row|
         line = '|'
         row[:inputs].each_with_index do |value , i|
-          line << value.center(cols[i + 1] - cols[i] - 1) << '|'
+          line << value.center(columns[i + 1] - columns[i] - 1) << '|'
         end
         row[:outputs].inject(inputs.count) do |i, value|
-          line << value.center(cols[i + 1] - cols[i] - 1) << '|'
+          line << value.center(columns[i + 1] - columns[i] - 1) << '|'
           i + 1
         end
-        canvas << line
+        lines << line
       end
-      canvas << divider
+      lines << divider(width, lwidth)
+    end
 
-      canvas.join("\n")
+    def divider(width, lwidth)
+      line = '+' + '-'*(width - 2) + '+'
+      line[lwidth] = '+'
+      line
+    end
+
+    def headers(inputs, outputs)
+      line = '|'
+      inputs.each  { |input|  line << ' ' << input  << ' ' << '|' }
+      outputs.each { |output| line << ' ' << output << ' ' << '|' }
+      line
+    end
+
+    def get_columns(inputs, outputs)
+      cols = [0]
+      inputs.each  { |input|  cols << cols.last + input.length + 3 }
+      outputs.each { |output| cols << cols.last + output.length + 3 }
+      cols
     end
   end
 end
