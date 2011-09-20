@@ -1,19 +1,18 @@
 #!/usr/bin/env ruby
 
-$LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
-require 'circuitry'
-require 'circuitry/simulator'
-
-$LOAD_PATH.unshift File.dirname(__FILE__) + '/../circuits'
-Dir[File.dirname(__FILE__) + '/../circuits/*.rb'].each do |file| 
-  require File.basename(file, File.extname(file))
-end
+require_relative '../lib/circuitry'
+require_relative '../lib/circuitry/simulator'
 
 if ARGV.size == 1
-  simulator = Circuitry::Simulator.new(ARGV[0])
+  circuit = ARGV[0]
+  folder, circuit = circuit.split('/') if circuit.include?('/')
+  Circuitry.load_files(folder)
+
+  simulator = Circuitry::Simulator.new(circuit)
   simulator.simulate
   puts simulator.print
 else
-  puts 'Usage:   bin/circuitry [CircuitName]'
-  puts 'Example: bin/circuitry FullAdder'
+  puts 'Usage:   bin/circuitry [OptionalFolderName/][CircuitName]'
+  puts 'Example: bin/circuitry MyCircuit'
+  puts 'Example: bin/circuitry examples/FullAdder'
 end

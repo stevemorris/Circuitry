@@ -6,7 +6,7 @@ module Circuitry
       inputs  = []
       outputs = []
 
-      Object.const_get(circuit).each do |input, output|
+      Circuitry[circuit].each do |input, output|
         inputs  << input unless input.include?('#')
         outputs << output unless output.class == Array || output.include?('#')
       end
@@ -17,7 +17,7 @@ module Circuitry
     private
 
     def parse_wires(circuit, wires = {}, prefix = '')
-      Object.const_get(circuit).each do |input, outputs|
+      Circuitry[circuit].each do |input, outputs|
         outputs = [outputs] unless outputs.class == Array
 
         outputs.each do |output|

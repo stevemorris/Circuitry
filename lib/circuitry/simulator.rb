@@ -1,7 +1,7 @@
 module Circuitry
   class Simulator
     def initialize(circuit)
-      unless Object.const_defined?(circuit)
+      if Circuitry[circuit].nil?
         raise ArgumentError, "#{circuit} circuit not defined. See README."
       end
 
