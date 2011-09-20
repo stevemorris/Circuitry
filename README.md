@@ -4,7 +4,7 @@ Circuitry is a digital logic simulator I developed as part of [Ruby Mendicant Un
 
 Circuitry enables you to define digital circuits with AND, OR, XOR and NOT gates as well as other circuits you've previously defined. You can build up complex circuits in a modular way. You define your circuits in one or more text files using a Ruby-compatible DSL.
 
-Once you've defined your circuits, you run the Circuitry application to simulate their operation. The application automatically performs multiple simulations, one for every unique combination of input values. It captures the set of output values produced by the circuit(s) for each simulation run. Finally, the applicaiton prints a truth table of the results to the console.
+Once you've defined your circuits, you run the Circuitry application to simulate their operation. The application automatically performs multiple simulations, one for every unique combination of input values. It captures the set of output values produced by the circuit(s) for each simulation run. Finally, the application prints a truth table of the results to the console.
 
 ## Running the Application
 
@@ -14,13 +14,17 @@ Circuitry requires Ruby 1.9. You run the application from the command line as fo
   
 where CircuitName is the name of the main circuit whose inputs and outputs will be simulated. This circuit can include other circuits in it's definition.
 
-Some sample circuits are defined in the file circuits/samples.rb. To try out Circuitry with the sample FullAdder circuit, run the following command:
+Circuit definitions are loaded from the *circuits* folder by default. Alternatively, you can prepend a folder name and slash to load from a subfolder of the *circuits* folder instead:
 
-    bin/circuitry FullAdder
+    bin/circuitry [OptionalFolderName/][CircuitName]
+
+Some sample circuits are defined in the file circuits/examples/sample_circuits.rb. To try out Circuitry with the sample FullAdder circuit, run the following command:
+
+    bin/circuitry examples/FullAdder
 
 ## Circuit Definition Format
 
-Circuit definitions are stored in one or more text files in the circuits/ folder. The application automatically loads all files in this folder that have a .rb extension.
+Circuit definitions are stored in one or more text files in the *circuits* folder by default, or optionally in a subfolder of the *circuits* folder. The application automatically loads all files in the *circuits* folder, or a specified subfolder, that have a .rb extension.
 
 Each circuit must have a unique name, with no spaces or special characters. The format of a circuit definition must follow this structure:
 
@@ -46,7 +50,7 @@ Each input and output must have a unique name within that circuit definition, an
 
 A circuit's external inputs and outputs (to the simulator or another circuit) do not include an Id or a Lead.
 
-Below is the sample FullAdder circuit from the file circuits/samples.rb, which is an example of a complete circuit definition:
+Below is the sample FullAdder circuit from the file circuits/examples/sample_circuits.rb, which is an example of a complete circuit definition:
 
     FullAdder = {
       'A'       => ['XOR#1.A', 'AND#2.A'],
@@ -59,7 +63,7 @@ Below is the sample FullAdder circuit from the file circuits/samples.rb, which i
       'OR#1.Q'  => 'Cout'
     }
 
-A 2-Bit Adder circuit is composed of two FullAdder circuits. Below is the sample TwoBitAdder circuit from the file circuits/samples.rb, which is an example of one circuit including another:
+A 2-Bit Adder circuit is composed of two FullAdder circuits. Below is the sample TwoBitAdder circuit from the file circuits/examples/sample_circuits.rb, which is an example of a circuit including another circuit:
 
     TwoBitAdder = {
       'Cin'              => 'FullAdder#1.Cin',
