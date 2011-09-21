@@ -1,5 +1,5 @@
 # Full Adder circuit: see http://en.wikipedia.org/wiki/Adder_(electronics)
-FullAdder = {
+Circuitry["FullAdder"] = {
   'A'       => ['XOR#1.A', 'AND#2.A'],
   'B'       => ['XOR#1.B', 'AND#2.B'],
   'XOR#1.Q' => ['XOR#2.A', 'AND#1.A'],
@@ -11,7 +11,7 @@ FullAdder = {
 }
 
 # 2-Bit Adder circuit incorporating two Full Adder circuits
-TwoBitAdder = {
+Circuitry["TwoBitAdder"] = {
   'Cin'              => 'FullAdder#1.Cin',
   'A1'               => 'FullAdder#1.A',
   'B1'               => 'FullAdder#1.B',
@@ -24,7 +24,7 @@ TwoBitAdder = {
 }
 
 # The simple_circuits sample from http://puzzlenode.com/puzzles/18
-Simple = {
+Circuitry["Simple"] = {
   'A1'     => 'OR#1.A',
   'B1'     => 'OR#1.B',
   'OR#1.Q' => 'Q1',

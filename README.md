@@ -10,25 +10,23 @@ Once you've defined your circuits, you run the Circuitry application to simulate
 
 Circuitry requires Ruby 1.9. You run the application from the command line as follows:
 
-    bin/circuitry <CircuitName>
+    bin/circuitry circuit -d path
   
-where CircuitName is the name of the main circuit whose inputs and outputs will be simulated. This circuit can include other circuits in it's definition.
+where *circuit* is the name of the main circuit whose inputs and outputs will be simulated, and where *path* is the path to the circuit definitions folder. The *path* must be preceded by the *-d* option flag.
 
-Circuit definitions are loaded from the *circuits* folder by default. Alternatively, you can prepend a folder name and slash to load from a subfolder of the *circuits* folder instead:
+[Note the *circuit* you specify is the starting circuit for the simulation, but this circuit can reference other circuits in its definition.]  
 
-    bin/circuitry [OptionalFolderName/][CircuitName]
+Below is an example of how to run Circuitry with the sample FullAdder circuit provided in the examples folder:
 
-Some sample circuits are defined in the file circuits/examples/sample_circuits.rb. To try out Circuitry with the sample FullAdder circuit, run the following command:
-
-    bin/circuitry examples/FullAdder
+    bin/circuitry FullAdder -d examples
 
 ## Circuit Definition Format
 
-Circuit definitions are stored in one or more text files in the *circuits* folder by default, or optionally in a subfolder of the *circuits* folder. The application automatically loads all files in the *circuits* folder, or a specified subfolder, that have a .rb extension.
+Circuit definitions are stored in one or more text files in the folder specified after the *-d* command line option. The application automatically loads all files in that folder that have a .rb extension.
 
-Each circuit must have a unique name, with no spaces or special characters. The format of a circuit definition must follow this structure:
+Each circuit must have a unique name. The format of a circuit definition must follow this structure:
 
-    CircuitName = {
+    Circuitry["CircuitName"] = {
       'input1' => 'output1',
       .
       .
@@ -50,9 +48,9 @@ Each input and output must have a unique name within that circuit definition, an
 
 A circuit's external inputs and outputs (to the simulator or another circuit) do not include an Id or a Lead.
 
-Below is the sample FullAdder circuit from the file circuits/examples/sample_circuits.rb, which is an example of a complete circuit definition:
+Below is the sample FullAdder circuit from the file examples/sample_circuits.rb, which is an example of a complete circuit definition:
 
-    FullAdder = {
+    Circuitry["FullAdder"] = {
       'A'       => ['XOR#1.A', 'AND#2.A'],
       'B'       => ['XOR#1.B', 'AND#2.B'],
       'XOR#1.Q' => ['XOR#2.A', 'AND#1.A'],
@@ -63,9 +61,9 @@ Below is the sample FullAdder circuit from the file circuits/examples/sample_cir
       'OR#1.Q'  => 'Cout'
     }
 
-A 2-Bit Adder circuit is composed of two FullAdder circuits. Below is the sample TwoBitAdder circuit from the file circuits/examples/sample_circuits.rb, which is an example of a circuit including another circuit:
+A 2-Bit Adder circuit is composed of two FullAdder circuits. Below is the sample TwoBitAdder circuit from the file examples/sample_circuits.rb, which is an example of a circuit including another circuit:
 
-    TwoBitAdder = {
+    Circuitry["TwoBitAdder"] = {
       'Cin'              => 'FullAdder#1.Cin',
       'A1'               => 'FullAdder#1.A',
       'B1'               => 'FullAdder#1.B',

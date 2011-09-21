@@ -1,18 +1,17 @@
 #!/usr/bin/env ruby
 
 require_relative '../lib/circuitry'
+require_relative '../lib/circuitry/options'
 require_relative '../lib/circuitry/simulator'
 
-if ARGV.size == 1
-  circuit = ARGV[0]
-  folder, circuit = circuit.split('/') if circuit.include?('/')
-  Circuitry.load_files(folder)
+opts = Circuitry::Options.new(ARGV)
 
-  simulator = Circuitry::Simulator.new(circuit)
-  simulator.simulate
-  puts simulator.print
-else
-  puts 'Usage:   bin/circuitry [OptionalFolderName/][CircuitName]'
-  puts 'Example: bin/circuitry MyCircuit'
-  puts 'Example: bin/circuitry examples/FullAdder'
+path = '../' + opts.path
+path << '/' unless path.end_with?('/')
+Dir[File.dirname(__FILE__) + '/' + path + '*.rb'].each do |file|
+  require_relative path + File.basename(file, File.extname(file))
 end
+
+simulator = Circuitry::Simulator.new(opts.circuit)
+simulator.simulate
+puts simulator.print

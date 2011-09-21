@@ -4,19 +4,17 @@ require_relative 'circuitry/table'
 module Circuitry
   extend self
 
-  @circuits = {}
-
-  def [](circuit)
-    return nil unless const_defined?(circuit)
-    @circuits[circuit] ||= const_get(circuit)
+  def []=(name, definition)
+    circuits[name] = definition
   end
 
-  def load_files(folder)
-    path = '../circuits/'
-    path << folder + '/' unless folder.nil?
+  def [](name)
+    circuits[name]
+  end
 
-    Dir[File.dirname(__FILE__) + '/' + path + '*.rb'].each do |file|
-      require_relative path + File.basename(file, File.extname(file))
-    end
+  private
+
+  def circuits
+    @circuits ||= {}
   end
 end
