@@ -5,7 +5,7 @@ require_relative '../lib/circuitry/options'
 require_relative '../lib/circuitry/simulator'
 
 opts = Circuitry::Options.new(ARGV)
-Dir.glob("#{definitions_dir}/*.rb") { |f| require(f) }
+Dir.glob("#{opts.path}/*.rb") { |f| require(f) }
 
 simulator = Circuitry::Simulator.new(opts.circuit)
 simulator.simulate
