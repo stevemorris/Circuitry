@@ -5,12 +5,7 @@ require_relative '../lib/circuitry/options'
 require_relative '../lib/circuitry/simulator'
 
 opts = Circuitry::Options.new(ARGV)
-
-path = '../' + opts.path
-path << '/' unless path.end_with?('/')
-Dir[File.dirname(__FILE__) + '/' + path + '*.rb'].each do |file|
-  require_relative path + File.basename(file, File.extname(file))
-end
+Dir.glob("#{definitions_dir}/*.rb") { |f| require(f) }
 
 simulator = Circuitry::Simulator.new(opts.circuit)
 simulator.simulate
