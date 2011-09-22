@@ -18,7 +18,7 @@ where *circuit* is the name of the main circuit whose inputs and outputs will be
 
 Below is an example of how to run Circuitry with the sample FullAdder circuit provided in the examples folder:
 
-    bin/circuitry FullAdder -d path/to/examples/folder
+    bin/circuitry FullAdder -d ./examples
 
 ## Circuit Definition Format
 

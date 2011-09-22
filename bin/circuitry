@@ -1,12 +1,5 @@
 #!/usr/bin/env ruby
 
 require_relative '../lib/circuitry'
-require_relative '../lib/circuitry/options'
-require_relative '../lib/circuitry/simulator'
 
-opts = Circuitry::Options.new(ARGV)
-Dir.glob("#{opts.path}/*.rb") { |f| require(f) }
-
-simulator = Circuitry::Simulator.new(opts.circuit)
-simulator.simulate
-puts simulator.print
+Circuitry::Application.run(ARGV)

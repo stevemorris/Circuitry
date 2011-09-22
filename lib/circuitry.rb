@@ -1,4 +1,6 @@
+require_relative 'circuitry/application'
 require_relative 'circuitry/parser'
+require_relative 'circuitry/simulator'
 require_relative 'circuitry/table'
 
 module Circuitry
